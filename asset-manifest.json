@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/wordle-solver-ui/static/css/main.8df2febd.css",
+    "main.js": "/wordle-solver-ui/static/js/main.7acd8f30.js",
+    "index.html": "/wordle-solver-ui/index.html",
+    "main.8df2febd.css.map": "/wordle-solver-ui/static/css/main.8df2febd.css.map",
+    "main.7acd8f30.js.map": "/wordle-solver-ui/static/js/main.7acd8f30.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.8df2febd.css",
+    "static/js/main.7acd8f30.js"
+  ]
+}
