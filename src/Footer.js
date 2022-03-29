@@ -9,12 +9,12 @@ class Footer extends Component {
             href="http://adamjanicki2.github.io/wordle-solver-ui"
             target="_blank"
             rel="noreferrer"
-            className="no-underline underline-hover dim mr1"
+            className="dim mr1"
             style={{ color: "black" }}
           >
             Wordle Solver
           </a>{" "}
-          © 2022 Absolute Legends Adam and Noah
+          Est. 2022 Built from scratch by Adam and Noah
         </div>
       </div>
     );

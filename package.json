@@ -22,7 +22,7 @@
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "build-extension": "npm run build && sed 's/\\/wordle-solver-ui\\///g' build/index.html"
+    "build-extension": "npm run build && python3 build_extension.py"
   },
   "eslintConfig": {
     "extends": [

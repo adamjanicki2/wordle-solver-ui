@@ -1,7 +1,7 @@
 {
   "name": "Wordle Solver",
-  "description": "Wordle Solver",
-  "version": "1.0",
+  "description": "A custom-built solver for Wordle that can solve a puzzle in an average of under 4 guesses!",
+  "version": "0.0.1",
   "manifest_version": 3,
   "permissions": ["storage"],
   "action": {

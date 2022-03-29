@@ -23,29 +23,24 @@ class App extends React.Component {
     };
   }
 
-  // componentDidMount = () => {
-  //   chrome.storage.local.get("savedData", function (savedData) {
-  //     if (savedData.savedData) {
-  //       chrome.storage.local.get("data", function (data) {
-  //         data = JSON.parse(data.data);
-  //         data.puzzle = JSON.parse(data.puzzle);
-  //         data.puzzle.words = JSON.parse(data.puzzle.words);
-  //         data.puzzle.validLetters = JSON.parse(data.puzzle.validLetters);
-  //         data.guesses = JSON.parse(data.guesses);
-  //         data.colors = JSON.parse(data.colors);
-  //         console.log(data);
-  //         const puzzle = new Puzzle(
-  //           DEFAULT_STARTING_WORD,
-  //           data.puzzle.currentGuess,
-  //           data.puzzle.words,
-  //           new Set(...data.puzzle.validLetters)
-  //         );
-  //         const colors = data.colors;
-  //         const guesses = data.guesses;
-  //       });
-  //     }
-  //   });
-  // };
+  async componentDidMount() {
+    const savedData = (await chrome.storage.local.get("savedData")).savedData;
+    console.log(savedData);
+    if (savedData) {
+      let data = (await chrome.storage.local.get("data")).data;
+      data = JSON.parse(data);
+      const puzzle = new Puzzle(
+        DEFAULT_STARTING_WORD,
+        data.puzzle.currentGuess,
+        data.puzzle.words,
+        new Set(...data.puzzle.validLetters)
+      );
+      const colors = data.colors;
+      const guesses = data.guesses;
+      console.log(guesses);
+      this.setState({ puzzle, colors, guesses });
+    }
+  }
 
   saveData = () => {
     console.log("SET DATA");
@@ -89,11 +84,14 @@ class App extends React.Component {
     return this.setState({ colors: currentColors });
   };
 
-  submitGuess = () => {
+  submitGuess = async () => {
     const currentGuess = this.state.guesses[this.state.guesses.length - 1];
     if (!Puzzle.isValidWord(currentGuess)) {
-      window.alert(`'${currentGuess.toUpperCase()}' is an invalid guess!`);
+      return window.alert(
+        `'${currentGuess.toUpperCase()}' is an invalid guess!`
+      );
     }
+    this.saveData();
     const currentColors = this.state.colors;
     const colors = [...currentColors[currentColors.length - 1]];
     this.state.puzzle.guessWord(currentGuess, colors);
@@ -102,7 +100,11 @@ class App extends React.Component {
     ]);
     const currentGuesses = this.state.guesses;
     currentGuesses.push(this.state.puzzle.recommendGuess());
-    this.setState({ guesses: currentGuesses, colors: currentColors });
+    await this.setState({ guesses: currentGuesses, colors: currentColors });
+    return this.state.puzzle.recommendGuess() &&
+      this.state.puzzle.currentGuess < 7
+      ? this.saveData()
+      : this.clearData();
   };
 
   render() {
@@ -112,8 +114,19 @@ class App extends React.Component {
           !this.hasWon() &&
           this.state.puzzle.currentGuess < 7 && (
             <>
+              {this.state.guesses.length > 1 && (
+                <>
+                  <div className="tc f3 fw3 pa2">
+                    ({this.state.puzzle.currentGuess - 1}) Previous Guess:
+                  </div>
+                  <Word
+                    result={this.state.colors[this.state.colors.length - 2]}
+                    guess={this.state.guesses[this.state.guesses.length - 2]}
+                  />
+                </>
+              )}
               <div className="tc f3 fw3 pa2">
-                Recommended Guess:{" "}
+                ({this.state.puzzle.currentGuess}) Recommended Guess:{" "}
                 <span className="bg-light-gray br2 pa1">
                   {this.state.puzzle.recommendGuess().toUpperCase()}
                 </span>
@@ -147,7 +160,6 @@ class App extends React.Component {
                     ],
                   }}
                   onClick={() => {
-                    this.saveData();
                     this.submitGuess();
                   }}
                 >
