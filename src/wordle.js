@@ -1,4 +1,4 @@
-import { DEFAULT_STARTING_WORD, SCORES, WORDS } from "./util";
+import { DEFAULT_STARTING_WORD, WORDS } from "./util";
 
 export class Puzzle {
   constructor(

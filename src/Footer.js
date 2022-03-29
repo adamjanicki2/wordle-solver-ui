@@ -1,39 +1,21 @@
 import React, { Component } from "react";
 
-const LOGO_SIZE = "16px";
-
 class Footer extends Component {
   render() {
     return (
-      <div className="bg-lightest-blue flex flex-column items-center justify-center w-100 pa4 mt2">
-        <div className="flex pb1 items-center">
-          © 2022 Absolute Legends{" "}
+      <div className="flex flex-column items-center justify-center w-100 pa1 mt1 bt b--moon-gray">
+        <div className="flex ma0 pa0 items-center">
           <a
-            href="https://www.adamovies.com/"
+            href="http://adamjanicki2.github.io/wordle-solver-ui"
             target="_blank"
             rel="noreferrer"
-            className="no-underline dim mh1 flex items-center"
+            className="no-underline underline-hover dim mr1"
             style={{ color: "black" }}
           >
-            <img
-              src="/adamovies.svg"
-              className="mr1"
-              width={LOGO_SIZE}
-              height={LOGO_SIZE}
-            />{" "}
-            Adam
+            Wordle Solver
           </a>{" "}
-          and Noah
+          © 2022 Absolute Legends Adam and Noah
         </div>
-        <a
-          href="https://www.nytimes.com/games/wordle/index.html"
-          target="_blank"
-          rel="noreferrer"
-          className="dim pt1"
-          style={{ color: "black" }}
-        >
-          Play Wordle
-        </a>
       </div>
     );
   }

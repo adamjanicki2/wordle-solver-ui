@@ -1,5 +1,5 @@
 {
-  "name": "wordleui",
+  "name": "wordle-solver-ui",
   "homepage": "http://adamjanicki2.github.io/wordle-solver-ui",
   "version": "0.1.0",
   "private": true,
@@ -21,7 +21,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "build-extension": "npm run build && sed 's/\\/wordle-solver-ui\\///g' build/index.html"
   },
   "eslintConfig": {
     "extends": [

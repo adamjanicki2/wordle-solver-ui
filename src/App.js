@@ -1,10 +1,11 @@
+/* global chrome */
 import React from "react";
 import "./index.css";
 import { Puzzle } from "./wordle";
 import Word from "./Word";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { NUMBER_TO_EMOJI } from "./util";
+import { DEFAULT_STARTING_WORD, NUMBER_TO_EMOJI } from "./util";
 import Footer from "./Footer";
 
 const COLOR_ARRAY = ["black", "yellow", "green"];
@@ -14,12 +15,61 @@ class App extends React.Component {
     super(props);
     const puzzle = new Puzzle();
     const guesses = [puzzle.recommendGuess()];
+    const colors = [["black", "black", "black", "black", "black"]];
     this.state = {
       puzzle,
       guesses,
-      colors: [["black", "black", "black", "black", "black"]],
+      colors,
     };
   }
+
+  // componentDidMount = () => {
+  //   chrome.storage.local.get("savedData", function (savedData) {
+  //     if (savedData.savedData) {
+  //       chrome.storage.local.get("data", function (data) {
+  //         data = JSON.parse(data.data);
+  //         data.puzzle = JSON.parse(data.puzzle);
+  //         data.puzzle.words = JSON.parse(data.puzzle.words);
+  //         data.puzzle.validLetters = JSON.parse(data.puzzle.validLetters);
+  //         data.guesses = JSON.parse(data.guesses);
+  //         data.colors = JSON.parse(data.colors);
+  //         console.log(data);
+  //         const puzzle = new Puzzle(
+  //           DEFAULT_STARTING_WORD,
+  //           data.puzzle.currentGuess,
+  //           data.puzzle.words,
+  //           new Set(...data.puzzle.validLetters)
+  //         );
+  //         const colors = data.colors;
+  //         const guesses = data.guesses;
+  //       });
+  //     }
+  //   });
+  // };
+
+  saveData = () => {
+    console.log("SET DATA");
+    chrome.storage.local.set({
+      savedData: true,
+      data: JSON.stringify({
+        colors: this.state.colors,
+        guesses: this.state.guesses,
+        puzzle: {
+          startingWord: this.state.puzzle.startingWord,
+          currentGuess: this.state.puzzle.currentGuess,
+          words: this.state.puzzle.words,
+          validLetters: [...this.state.puzzle.validLetters],
+        },
+      }),
+    });
+  };
+
+  clearData = () => {
+    console.log("CLEAR DATA");
+    chrome.storage.local.set({
+      savedData: false,
+    });
+  };
 
   hasWon = () => {
     if (this.state.colors.length <= 1) return false;
@@ -57,13 +107,7 @@ class App extends React.Component {
 
   render() {
     return (
-      <div className="flex flex-column items-center w-100">
-        <h1 className="bg-lightest-blue tc ma0 pa3 mb2 f1 fw6 w-100">
-          Wordle Solver
-        </h1>
-        {this.state.guesses.slice(0, -1).map((guess, index) => (
-          <Word result={this.state.colors[index]} guess={guess} />
-        ))}
+      <div className="flex flex-column items-center w-100 pa2">
         {this.state.puzzle.recommendGuess() &&
           !this.hasWon() &&
           this.state.puzzle.currentGuess < 7 && (
@@ -102,7 +146,10 @@ class App extends React.Component {
                       '"Segoe UI"',
                     ],
                   }}
-                  onClick={this.submitGuess}
+                  onClick={() => {
+                    this.saveData();
+                    this.submitGuess();
+                  }}
                 >
                   Submit
                 </Button>
@@ -110,16 +157,34 @@ class App extends React.Component {
             </>
           )}
         {!this.state.puzzle.recommendGuess() && !this.hasWon() && (
-          <div className="tc f3 fw3 pa2">No Valid Guesses!</div>
+          <>
+            <div className="tc f3 fw3 pa2">No Valid Guesses 😩</div>
+            <Word
+              result={this.state.colors[this.state.colors.length - 2]}
+              guess={this.state.guesses[this.state.guesses.length - 2]}
+            />
+          </>
         )}
         {this.hasWon() && (
-          <div className="tc f3 fw3 pa2">
-            You won! Guesses:{" "}
-            {NUMBER_TO_EMOJI[this.state.puzzle.currentGuess - 1]}
-          </div>
+          <>
+            <div className="tc f3 fw3 pa2">
+              You won! Guesses:{" "}
+              {NUMBER_TO_EMOJI[this.state.puzzle.currentGuess - 1]}
+            </div>
+            <Word
+              result={this.state.colors[this.state.colors.length - 2]}
+              guess={this.state.guesses[this.state.guesses.length - 2]}
+            />
+          </>
         )}
         {!this.hasWon() && this.state.puzzle.currentGuess >= 7 && (
-          <div className="tc f3 fw3 pa2">No Valid Guesses 😩</div>
+          <>
+            <div className="tc f3 fw3 pa2">No Guesses Remaining 😩</div>
+            <Word
+              result={this.state.colors[this.state.colors.length - 2]}
+              guess={this.state.guesses[this.state.guesses.length - 2]}
+            />
+          </>
         )}
         <Button
           variant="text"
@@ -128,6 +193,7 @@ class App extends React.Component {
             fontFamily: ["-apple-system", "BlinkMacSystemFont", '"Segoe UI"'],
           }}
           onClick={() => {
+            this.clearData();
             window.location.reload(false);
           }}
         >
