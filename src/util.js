@@ -5,7 +5,7 @@ export const CORRECT_RESULT = "ggggg";
 export const GREEN = "g";
 export const YELLOW = "y";
 export const BLACK = "b";
-export const DEFAULT_STARTING_WORD = "irate";
+export const DEFAULT_STARTING_WORD = "trace";
 // export const NUMBER_TO_EMOJI = "1️⃣2️⃣3️⃣4️⃣5️⃣6️⃣";
 export const NUMBER_TO_EMOJI = {
   1: "1️⃣",
